@@ -18,7 +18,7 @@ import com.buschmais.jqassistant.plugin.common.api.scanner.filesystem.FileResour
 import org.apache.commons.lang3.StringUtils;
 
 /**
- * Scanner plugin which handles URLs as input.
+ * Scanner plugin which handles URLs as input, using standard Java mechanisms to handle protocols.
  */
 public class UrlScannerPlugin extends AbstractResourceScannerPlugin<URL, FileDescriptor> {
 
@@ -34,7 +34,8 @@ public class UrlScannerPlugin extends AbstractResourceScannerPlugin<URL, FileDes
             public InputStream createStream() throws IOException {
                 URLConnection urlConnection = item.openConnection();
                 if (item.getUserInfo() != null) {
-                    String basicAuth = "Basic " + DatatypeConverter.printBase64Binary(item.getUserInfo().getBytes());
+                    String basicAuth = "Basic " + DatatypeConverter.printBase64Binary(item.getUserInfo()
+                        .getBytes());
                     urlConnection.setRequestProperty("Authorization", basicAuth);
                 }
                 return urlConnection.getInputStream();
@@ -53,21 +54,26 @@ public class UrlScannerPlugin extends AbstractResourceScannerPlugin<URL, FileDes
         String query = item.getQuery();
         String ref = item.getRef();
         StringBuilder result = new StringBuilder();
-        result.append(protocol).append(":");
+        result.append(protocol)
+            .append(":");
         if (StringUtils.isNotEmpty(host)) {
-            result.append("//").append(host);
+            result.append("//")
+                .append(host);
         }
         if (port != -1) {
-            result.append(":").append(port);
+            result.append(":")
+                .append(port);
         }
         if (path != null) {
             result.append(path);
         }
         if (query != null) {
-            result.append("?").append(query);
+            result.append("?")
+                .append(query);
         }
         if (ref != null) {
-            result.append("#").append(ref);
+            result.append("#")
+                .append(ref);
         }
         return result.toString();
     }
